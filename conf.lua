@@ -2,8 +2,8 @@
 function love.conf(t)
 	t.title = "Project Alien Smasher" -- The title of the window the game is in (string)
 	t.author = "UniversalRed"        -- The author of the game (string)
-	t.window.width = 1000        -- we want our game to be long and thin.
-	t.window.height = 1000
+	t.window.width = 750        -- we want our game to be long and thin.
+	t.window.height = 500
     t.modules.joystick = true   -- Enable the joystick module (boolean)
     t.modules.audio = true      -- Enable the audio module (boolean)
     t.modules.keyboard = true   -- Enable the keyboard module (boolean)

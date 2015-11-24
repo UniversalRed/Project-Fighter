@@ -1,0 +1,19 @@
+NOT COMPLETED:
+    Engine System:
+        - Have ship fire faster
+        - Move faster
+
+    Enemies:
+        - Different enemy types
+            * Blue enemies move faster (spawnRate/4)
+            * Red enemies move slower but also shoot and move left to right (spawnrate/16)
+
+    Options:
+        - Add a 'Back' button to go back to the main screen
+        - Add spawn rate settings
+
+    In-Game:
+        - Add a 'ESC' button to open up the main menu in-game
+
+COMPLETED:
+- Have a song playing (check)

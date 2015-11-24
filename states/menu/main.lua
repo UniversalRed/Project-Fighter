@@ -62,6 +62,8 @@ function love.mousepressed( x, y, button )
 					loadState("game")
 				elseif v.action == "exit" then
 					love.event.quit()
+				elseif v.action == "options" then
+					loadState("options")
 				end
 			end
 		end

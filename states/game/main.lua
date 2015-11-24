@@ -1,4 +1,6 @@
-player = {x = 450, y = 900, speed = 100, img = nil}
+UI = require 'Thranduil/UI'
+
+player = {x = love.window.getWidth()/2 - 75, y = love.window.getHeight() - 100, speed = 100, img = nil}
 isAlive = true
 canShoot = true
 canShootTimerMax = 0.5
@@ -7,10 +9,11 @@ bulletImg = nil
 bullets = {}
 createEnemyTimerMax = 0.4
 createEnemyTimer = createEnemyTimerMax
-enemyImg = nil
+enemyImg = {}
 enemies = {}
 score = 0
 isFocused = false
+gameStart = false
 
 function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
   return x1 < x2+w2 and
@@ -22,12 +25,20 @@ end
 function load ()
 	player.img = love.graphics.newImage ("assets/fighter.png")
 	bulletImg = love.graphics.newImage ("assets/fighter_missile.png")
-	enemyImg = love.graphics.newImage ("assets/alien_ship_green.png")
+	enemyImg[1] = love.graphics.newImage ("assets/alien_ship_green.png")
+	enemyImg[2]= love.graphics.newImage ("assets/alien_ship_blue.png")
+	enemyImg[3] = love.graphics.newImage ("assets/alien_ship_red.png")
+	music = love.audio.newSource("assets/Project Fighter Song.mp3")
 
+	UI.registerEvents()
 end
 
 function love.update (dt)
-	
+
+	if dt < 1/30 then
+		love.timer.sleep(1/30 - dt)
+	end
+
 	if love.keyboard.isDown('q') then
 		isFocused = true
 	elseif (love.keyboard.isDown('e')) then
@@ -43,14 +54,14 @@ function love.update (dt)
 			if player.x < (love.graphics.getWidth() - player.img:getWidth()) then
 				player.x = player.x + (player.speed*dt)
 			end
-		elseif love.keyboard.isDown('up','w') then
-			if player.y < (love.graphics.getHeight() - player.img:getHeight()) then
-				player.y = player.y - (player.speed*dt)
-			end
-		elseif love.keyboard.isDown('down','s') then
-			if player.y < (love.graphics.getHeight() + player.img:getHeight()) then
-				player.y = player.y + (player.speed*dt)
-			end
+		--elseif love.keyboard.isDown('up','w') then
+		--	if player.y < (love.graphics.getHeight() - player.img:getHeight()) then
+		--		player.y = player.y - (player.speed*dt)
+		--	end
+		--elseif love.keyboard.isDown('down','s') then
+		--	if player.y < (love.graphics.getHeight() + player.img:getHeight()) then
+		--		player.y = player.y + (player.speed*dt)
+		--	end
 		end 
 	
 		-- Boundaries
@@ -60,11 +71,11 @@ function love.update (dt)
 		if (player.y < 0) then
 			player.y = 0
 		end
-		if (player.x > 935) then
-			player.x = 935
+		if (player.x > love.window.getWidth()) then
+			player.x = love.window.getWidth()
 		end	
-		if (player.y > 935) then
-			player.y = 935
+		if (player.y > love.window.getHeight()) then
+			player.y = love.window.getHeight()
 		end
 	
 		canShootTimer = canShootTimer - (1 * dt)
@@ -94,14 +105,14 @@ function love.update (dt)
 			createEnemyTimer = createEnemyTimerMax
 			-- Create an enemy
 			randomNumber = math.random(10, love.graphics.getWidth() - 10)
-			newEnemy = { x = randomNumber, y = -10, img = enemyImg }
+			newEnemy = { x = randomNumber, y = -10, img = enemyImg[1] }
 			table.insert(enemies, newEnemy)
 		end
 		
 		for i, enemy in ipairs(enemies) do
 			enemy.y = enemy.y + (200 * dt)
 		
-			if enemy.y > love.window.getHeight() - 75 then -- remove enemies when they pass off the screen
+			if enemy.y > love.window.getHeight() - 25 then -- remove enemies when they pass off the screen
 				table.remove(enemies, i)
 			end
 		end
@@ -135,6 +146,20 @@ function love.update (dt)
 		score = 0
 		isAlive = true
 	end
+
+	if (isFocused == false) then
+		music:play()
+	end
+
+	if (gameStart == false) then
+		if (isFocused == false) then
+			isFocused = true
+		end
+		love.timer.sleep (3)
+		gameStart = true
+		isFocused = false
+	end
+
 end
 
 function love.focus(bool)
@@ -148,7 +173,7 @@ end
 function love.draw ()
 	love.graphics.setColor( 255, 255, 255, 255 )
 	love.graphics.setBackgroundColor( 0, 0, 0 )
-	
+
 	if (isAlive == true) then
 			love.graphics.draw (player.img, player.x, player.y)
 	else
